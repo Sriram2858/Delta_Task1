@@ -15,7 +15,12 @@ fun Nav(){
             }
         }
         composable("playerdatapage"){
-            Playerinfo()
+            Playerinfo {
+                navController.navigate("gamepage")
+            }
+        }
+        composable("gamepage"){
+            GamePage()
         }
     }
 }
