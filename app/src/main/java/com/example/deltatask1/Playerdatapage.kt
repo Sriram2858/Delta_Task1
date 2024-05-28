@@ -77,23 +77,24 @@ fun Playerinfo(navigationToGamePage:()->Unit){
                 .fillMaxSize()
                 .padding(start = 25.dp, end = 25.dp))
         {
-            Card(
-                colors = CardDefaults.cardColors(containerColor = Color(0xFFffd6b7)),
+            Button(
+                onClick = ({}),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFffd6b7)),
                 shape = CutCornerShape(30.dp),
                 border = BorderStroke(2.dp, color = Color(0xFFcdb6b6)),
                 modifier = Modifier
                     .height(60.dp)
                     .fillMaxWidth()
                     .offset(y = 55.dp)
-                    .shadow(10.dp, CutCornerShape(30.dp)),
+                    .shadow(10.dp, CutCornerShape(30.dp))
             ){
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text("PLAYER INFORMATION", fontSize = 25.sp, fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center, color = Color(0xFF000000))
                 }
             }
-            
-/*player1*/ Card(
+//player1
+            Card(
                 modifier = Modifier
                     .height(88.dp)
                     .width(160.dp)
@@ -114,6 +115,8 @@ fun Playerinfo(navigationToGamePage:()->Unit){
                             player1state = it
                         },
                         textStyle = LocalTextStyle.current.copy(
+                            fontSize = 15.sp,
+                            color = Color(0xFFff5f57),
                             textAlign = TextAlign.Center
                         ),
                         colors = TextFieldDefaults.textFieldColors(containerColor = Color(0xFF3d4175)
@@ -123,7 +126,7 @@ fun Playerinfo(navigationToGamePage:()->Unit){
                         color = Color(0xFFff5f57), modifier = Modifier.offset(y = 7.dp))
                 }
             }
-            
+//player2
             Card(
                 modifier = Modifier
                     .height(88.dp)
@@ -145,10 +148,11 @@ fun Playerinfo(navigationToGamePage:()->Unit){
                             player2state = it
                         },
                         textStyle = LocalTextStyle.current.copy(
+                            fontSize = 15.sp,
+                            color = Color(0xFF2fb6f0),
                             textAlign = TextAlign.Center
                         ),
-                        colors = TextFieldDefaults.textFieldColors(containerColor = Color(0xFF3d4175)
-                        )
+                        colors = TextFieldDefaults.textFieldColors(containerColor = Color(0xFF3d4175))
                     )
                     Text("--------", fontSize = 40.sp, fontWeight = FontWeight.Bold,
                         color = Color(0xFF2fb6f0), modifier = Modifier.offset(y = 7.dp))
