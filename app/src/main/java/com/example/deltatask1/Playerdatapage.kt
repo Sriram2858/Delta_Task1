@@ -79,13 +79,13 @@ fun Playerinfo(navigationToGamePage:()->Unit){
         {
             Card(
                 colors = CardDefaults.cardColors(containerColor = Color(0xFFffd6b7)),
-                shape = AbsoluteCutCornerShape(30.dp),
+                shape = CutCornerShape(30.dp),
                 border = BorderStroke(2.dp, color = Color(0xFFcdb6b6)),
                 modifier = Modifier
                     .height(60.dp)
                     .fillMaxWidth()
-                    .offset(y = 55.dp),
-                elevation = CardDefaults.cardElevation(15.dp)
+                    .offset(y = 55.dp)
+                    .shadow(10.dp, CutCornerShape(30.dp)),
             ){
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text("PLAYER INFORMATION", fontSize = 25.sp, fontWeight = FontWeight.Bold,
