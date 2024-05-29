@@ -1,5 +1,6 @@
 package com.example.deltatask1
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -61,7 +62,7 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
                 .offset(x = (-80).dp, y = 60.dp)
                 .shadow(10.dp, RoundedCornerShape(30.dp))) {
             }
-
+//player2
         Button(
             onClick = ({}),
             modifier = Modifier
@@ -72,9 +73,11 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2f323b)),
             shape = CutCornerShape(topStart = 30.dp, bottomStart = 30.dp),
             border = BorderStroke(3.dp, color = Color(0xFF000000))){
-            Text("Ramanaa", fontSize = 30.sp, fontWeight = FontWeight.Bold,
+            Text(
+                globalTextFieldValueReference2, fontSize = 30.sp, fontWeight = FontWeight.Bold,
                 color = Color(0xFF2fb6f0),
                 modifier = Modifier
+                    .fillMaxSize()
                     .graphicsLayer(rotationZ = 180f))
         }
 
@@ -88,9 +91,10 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
                 .offset(x = (340).dp, y = 720.dp)
                 .shadow(10.dp, RoundedCornerShape(30.dp))) {
         }
-
-        Card(
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF2f323b)),
+//PLAYER1
+        Button(
+            onClick = ({}),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2f323b)),
             shape = CutCornerShape(topEnd = 30.dp, bottomEnd = 30.dp),
             modifier = Modifier
                 .height(60.dp)
@@ -98,7 +102,11 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
                 .offset(x = 150.dp, y = 720.dp)
                 .clip(RoundedCornerShape(10.dp)),
             border = BorderStroke(3.dp, color = Color(0xFF000000))){
-
+            Text(
+                globalTextFieldValueReference1,
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold,
+                color = Color(0xFFff5f57))
         }
 
         Button(

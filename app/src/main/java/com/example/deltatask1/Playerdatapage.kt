@@ -32,6 +32,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,12 +55,18 @@ import java.time.format.TextStyle
 @Composable
 fun Playerinfo(navigationToGamePage:()->Unit){
 
-    var player1state by remember{
+    var textFieldValueReference1 by remember{
         mutableStateOf("")
     }
+    LaunchedEffect(textFieldValueReference1) {
+        globalTextFieldValueReference1 = textFieldValueReference1
+    }
 
-    var player2state by remember{
+    var textFieldValueReference2 by remember{
         mutableStateOf("")
+    }
+    LaunchedEffect(textFieldValueReference2) {
+        globalTextFieldValueReference2 = textFieldValueReference2
     }
 
     Box (
@@ -107,12 +114,12 @@ fun Playerinfo(navigationToGamePage:()->Unit){
                     contentAlignment = Alignment.BottomCenter
                 ){
                     TextField(
-                        value = player1state,
+                        value = textFieldValueReference1,
                         placeholder = {
                             Text("Enter Player-1 Name", fontSize = 13.sp, color = Color.Gray)
                         },
                         onValueChange = {
-                            player1state = it
+                            textFieldValueReference1 = it
                         },
                         textStyle = LocalTextStyle.current.copy(
                             fontSize = 15.sp,
@@ -140,12 +147,12 @@ fun Playerinfo(navigationToGamePage:()->Unit){
                     contentAlignment = Alignment.BottomCenter
                 ){
                     TextField(
-                        value = player2state,
+                        value = textFieldValueReference2,
                         placeholder = {
                             Text("Enter Player-2 Name", fontSize = 13.sp, color = Color.Gray)
                         },
                         onValueChange = {
-                            player2state = it
+                            textFieldValueReference2 = it
                         },
                         textStyle = LocalTextStyle.current.copy(
                             fontSize = 15.sp,
