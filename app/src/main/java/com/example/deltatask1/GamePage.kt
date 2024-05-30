@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -31,6 +32,11 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.AbsoluteAlignment
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,18 +46,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.ResolvedTextDirection
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import java.time.format.TextStyle
 
 @Composable
 fun GamePage(navigateToPlayerdatapage:()->Unit){
 
+    var isPlayerOneTurn by remember { mutableStateOf(true) }
+
+    val backgroundColor = if (isPlayerOneTurn) Color(0xFFff5f57) else Color(0xFF2fb6f0)
+
     Box (
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(0xFFff5f57))
-    ){
+            .background(backgroundColor)
+    ) {
         Card(
             colors = CardDefaults.cardColors(containerColor = Color(0xFF2f323b)),
             shape = RoundedCornerShape(30.dp),
@@ -60,25 +72,28 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
                 .height(60.dp)
                 .width(160.dp)
                 .offset(x = (-80).dp, y = 60.dp)
-                .shadow(10.dp, RoundedCornerShape(30.dp))) {
-            }
+                .shadow(10.dp, RoundedCornerShape(30.dp))
+        ) {
+        }
 //player2
         Button(
             onClick = ({}),
             modifier = Modifier
                 .height(60.dp)
-                .width(180.dp)
+                .wrapContentWidth(align = Alignment.CenterHorizontally, unbounded = true)
                 .offset(x = 90.dp, y = 60.dp)
                 .clip(RoundedCornerShape(10.dp)),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2f323b)),
             shape = CutCornerShape(topStart = 30.dp, bottomStart = 30.dp),
-            border = BorderStroke(3.dp, color = Color(0xFF000000))){
+            border = BorderStroke(3.dp, color = Color(0xFF000000))
+        ) {
             Text(
-                globalTextFieldValueReference2, fontSize = 30.sp, fontWeight = FontWeight.Bold,
+                text = if (globalTextFieldValueReference2 == "") "PLAYER2" else globalTextFieldValueReference2,
+                fontSize = 30.sp, fontWeight = FontWeight.Bold,
                 color = Color(0xFF2fb6f0),
                 modifier = Modifier
-                    .fillMaxSize()
-                    .graphicsLayer(rotationZ = 180f))
+                    .graphicsLayer(rotationZ = 180f)
+            )
         }
 
         Card(
@@ -89,7 +104,8 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
                 .height(60.dp)
                 .width(160.dp)
                 .offset(x = (340).dp, y = 720.dp)
-                .shadow(10.dp, RoundedCornerShape(30.dp))) {
+                .shadow(10.dp, RoundedCornerShape(30.dp))
+        ) {
         }
 //PLAYER1
         Button(
@@ -98,15 +114,17 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
             shape = CutCornerShape(topEnd = 30.dp, bottomEnd = 30.dp),
             modifier = Modifier
                 .height(60.dp)
-                .width(180.dp)
+                .wrapContentWidth(unbounded = true)
                 .offset(x = 150.dp, y = 720.dp)
                 .clip(RoundedCornerShape(10.dp)),
-            border = BorderStroke(3.dp, color = Color(0xFF000000))){
+            border = BorderStroke(3.dp, color = Color(0xFF000000))
+        ) {
             Text(
-                globalTextFieldValueReference1,
+                text = if (globalTextFieldValueReference1 == "") "PLAYER1" else globalTextFieldValueReference1,
                 fontSize = 30.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFFff5f57))
+                color = Color(0xFFff5f57)
+            )
         }
 
         Button(
@@ -116,9 +134,12 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
                 .size(50.dp)
                 .offset(x = 330.dp, y = 25.dp)
                 .shadow(10.dp, CircleShape),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.White)) {
-            Text(text = "X", fontSize = 25.sp, color = Color(0xFFa0b9cd),
-                fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+            colors = ButtonDefaults.buttonColors(containerColor = Color.White)
+        ) {
+            Text(
+                text = "X", fontSize = 25.sp, color = Color(0xFFa0b9cd),
+                fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
+            )
         }
 
         LazyVerticalGrid(
@@ -130,18 +151,38 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
             ),
             modifier = Modifier.padding(5.dp),
             content = {
-                items(25){i ->
+                items(25) { i ->
                     Card(
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier
                             .size(70.dp)
                             .padding(3.dp)
                             .shadow(5.dp, RoundedCornerShape(10.dp))
-                            .clickable { },
+                            .clickable { isPlayerOneTurn = !isPlayerOneTurn },
                         colors = CardDefaults.cardColors(containerColor = Color(0xFFf5e5ce))
-                    ){}
+                    ) {
+                        NumberIcon()
+                    }
                 }
             }
         )
+    }
+}
+
+@Composable
+fun NumberIcon(){
+    Box(
+        modifier = Modifier.size(60.dp),
+        contentAlignment = Alignment.Center
+    ){
+        Button(
+            onClick = {},
+            modifier = Modifier
+                .size(50.dp)
+                .clip(CircleShape),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFff5f57)),
+            ) {
+            Text("3", fontSize = 20.sp, textAlign = TextAlign.Center, color = Color.White)
+        }
     }
 }
