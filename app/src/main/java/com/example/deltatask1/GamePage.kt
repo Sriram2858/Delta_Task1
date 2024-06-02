@@ -3,10 +3,14 @@ package com.example.deltatask1
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -18,6 +22,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -26,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -44,9 +50,10 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun GamePage(navigateToPlayerdatapage:()->Unit){
 
-    var tile by remember { mutableStateOf(List(25) { 0 }) }
+    val tile = remember { mutableStateListOf(*Array(25) { 0 }) }
 
-    var playerOneTile by remember { mutableStateOf(List(25){ (-1) }) }
+    val playerOneTile = remember { mutableStateListOf(*Array(25){ 0 }) }
+    val playerTwoTile = remember { mutableStateListOf(*Array(25){ 0 }) }
 
     var isPlayerOneTurn by remember { mutableStateOf(true) }
     val backgroundColor = if (isPlayerOneTurn) Color(0xFFff5f57) else Color(0xFF2fb6f0)
@@ -58,6 +65,10 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
     var playerTwoFirstTurn by remember { mutableIntStateOf(1) }
 
     var currentPlayer by remember { mutableIntStateOf(1) }
+
+    var winner by remember { mutableStateOf("") }
+
+    var showDialog by remember { mutableStateOf(false) }
 
     Box (
         modifier = Modifier
@@ -76,8 +87,8 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
         ) {
             Text(
                 text = "$playerTwoPoints",
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Bold,
+                fontSize = 26.sp,
+                fontWeight = FontWeight.ExtraBold,
                 textAlign = TextAlign.Center,
                 color = Color(0xFF2fb6f0),
                 modifier = Modifier
@@ -113,13 +124,13 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
             border = BorderStroke(3.dp, color = Color(0xFF000000)),
             modifier = Modifier
                 .height(60.dp)
-                .width(72.dp)
-                .offset(x = (340).dp, y = 720.dp)
+                .width(80.dp)
+                .offset(x = (332).dp, y = 720.dp)
         ) {
             Text(
                 text = "$playerOnePoints",
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Bold,
+                fontSize = 26.sp,
+                fontWeight = FontWeight.ExtraBold,
                 textAlign = TextAlign.Center,
                 color = Color(0xFFff5f57)
             )
@@ -130,7 +141,7 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2f323b)),
             shape = CutCornerShape(topEnd = 30.dp, bottomEnd = 30.dp),
             modifier = Modifier
-                .padding(bottom = (58).dp, end = 85.dp)
+                .padding(bottom = (58).dp, end = 93.dp)
                 .clip(RoundedCornerShape(10.dp))
                 .align(Alignment.BottomEnd),
             border = BorderStroke(3.dp, color = Color(0xFF000000))
@@ -160,6 +171,43 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
             )
         }
 
+        fun expand(index: Int){
+            val x = index % 5
+            val y = index / 5
+            val expandX = Array(4){-1}
+            val expandY = Array(4){-1}
+            val expandIndex = Array(4){-1}
+
+            if (x-1 in 0..4 ) { expandX[0] = x-1 }
+            if (x in 0..4 ) { expandX[1] = x }
+            if (x+1 in 0..4 ) { expandX[2] = x+1 }
+            if (x in 0..4 ) { expandX[3] = x }
+
+            if (y in 0..4 ) {  expandY[0] = y }
+            if (y-1 in 0..4 ) { expandY[1] = y-1 }
+            if (y in 0..4 ) { expandY[2] = y }
+            if (y+1 in 0..4 ) { expandY[3] = y+1 }
+
+            for (i in 0..3){
+                if ((expandX[i] in 0..4) && (expandY[i] in 0..4)){
+                    expandIndex[i] = expandY[i] * 5 + expandX[i]
+                    tile[expandIndex[i]] += 1
+                    if (currentPlayer == 1) {
+                        playerOneTile[expandIndex[i]] = 1
+                        playerTwoTile[expandIndex[i]] = 0
+                    }
+                    else if(currentPlayer == 2){
+                        playerOneTile[expandIndex[i]] = 0
+                        playerTwoTile[expandIndex[i]] = 1
+                    }
+                    if (tile[expandIndex[i]] > 3){
+                        tile[expandIndex[i]] = 0
+                        expand( expandIndex[i] )
+                    }
+                }
+            }
+        }
+
         LazyVerticalGrid(
             columns = GridCells.Fixed(5),
             contentPadding = PaddingValues(
@@ -169,7 +217,7 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
             ),
             modifier = Modifier.padding(5.dp),
             content = {
-                items(25) {index->
+                items(25) {
                     Card(
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier
@@ -180,36 +228,83 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
 
                                 if (playerOneFirstTurn == 1) {
                                     isPlayerOneTurn = !isPlayerOneTurn
-                                    tile = tile
-                                        .toMutableList()
-                                        .also { it[index] = 3 }
-                                    playerOneTile = playerOneTile
-                                        .toMutableList()
-                                        .also { it.add(index)}
+                                    tile[it] = 3
+                                    playerOneTile[it] = 1
                                     playerOneFirstTurn = 0
                                     playerOnePoints += 3
                                     currentPlayer = 2
                                 } else if (playerTwoFirstTurn == 1) {
                                     isPlayerOneTurn = !isPlayerOneTurn
-                                    tile = tile
-                                        .toMutableList()
-                                        .also { it[index] = 3 }
+                                    tile[it] = 3
+                                    playerTwoTile[it] = 1
                                     playerTwoFirstTurn = 0
                                     playerTwoPoints += 3
                                     currentPlayer = 1
                                 } else if (currentPlayer == 1) {
-                                    isPlayerOneTurn = !isPlayerOneTurn
-                                    if (tile[index] == 3){
-                                        if (index == 0){
-                                            tile = tile
-                                                .toMutableList()
-                                                .also { it[index] = 0 }
-                                            tile = tile
-                                                .toMutableList()
-                                                .also { it[index + 1] += 1 }
+
+                                    if (tile[it] == 3 && playerOneTile[it] == 1) {
+                                        isPlayerOneTurn = !isPlayerOneTurn
+                                        tile[it] = 0
+                                        expand(it)
+                                        currentPlayer = 2
+                                    } else if (tile[it] != 0 && playerOneTile[it] == 1) {
+                                        isPlayerOneTurn = !isPlayerOneTurn
+                                        tile[it] += 1
+                                        currentPlayer = 2
+                                    }
+
+                                    playerOnePoints = 0
+                                    for (i in 0..24) {
+                                        if (playerOneTile[i] == 1) {
+                                            playerOnePoints += tile[i]
                                         }
                                     }
-                                    currentPlayer = 2
+                                    playerTwoPoints = 0
+                                    for (i in 0..24) {
+                                        if (playerTwoTile[i] == 1) {
+                                            playerTwoPoints += tile[i]
+                                        }
+                                    }
+
+                                    if (playerOnePoints == 0) {
+                                        winner = (if (globalTextFieldValueReference2 == "") "PLAYER2" else globalTextFieldValueReference2).uppercase()
+                                        showDialog = true
+                                    } else if (playerTwoPoints == 0) {
+                                        winner = (if (globalTextFieldValueReference1 == "") {"PLAYER1"} else globalTextFieldValueReference1).uppercase()
+                                        showDialog = true
+                                    }
+
+                                } else if (currentPlayer == 2) {
+                                    if (tile[it] == 3 && playerTwoTile[it] == 1) {
+                                        isPlayerOneTurn = !isPlayerOneTurn
+                                        tile[it] = 0
+                                        expand(it)
+                                        currentPlayer = 1
+                                    } else if (tile[it] != 0 && playerTwoTile[it] == 1) {
+                                        isPlayerOneTurn = !isPlayerOneTurn
+                                        tile[it] += 1
+                                        currentPlayer = 1
+                                    }
+
+                                    playerOnePoints = 0
+                                    for (i in 0..24) {
+                                        if (playerOneTile[i] == 1) {
+                                            playerOnePoints += tile[i]
+                                        }
+                                    }
+                                    playerTwoPoints = 0
+                                    for (i in 0..24) {
+                                        if (playerTwoTile[i] == 1) {
+                                            playerTwoPoints += tile[i]
+                                        }
+                                    }
+                                    if (playerOnePoints == 0) {
+                                        winner = (if (globalTextFieldValueReference2 == "") "PLAYER2" else globalTextFieldValueReference2).uppercase()
+                                        showDialog = true
+                                    } else if (playerTwoPoints == 0) {
+                                        winner = (if (globalTextFieldValueReference1 == "") "PLAYER1" else globalTextFieldValueReference1).uppercase()
+                                        showDialog = true
+                                    }
                                 }
 
                             },
@@ -221,8 +316,8 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
                                 .clip(RoundedCornerShape(10.dp)),
                             contentAlignment = Alignment.Center
                         ){
-                            if (tile[index] != 0){
-                                if(index in playerOneTile){
+                            if (tile[it] != 0){
+                                if(playerOneTile[it] == 1){
                                     Box(
                                         modifier = Modifier
                                             .clip(CircleShape)
@@ -230,7 +325,7 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
                                             .background(color = Color(0xFFff5f57)),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        Text(text = tile[index].toString(),
+                                        Text(text = tile[it].toString(),
                                             fontSize = 25.sp,
                                             fontWeight = FontWeight.ExtraBold,
                                             color = Color.White)
@@ -244,7 +339,7 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
                                             .background(color = Color(0xFF2fb6f0)),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        Text(text = tile[index].toString(),
+                                        Text(text = tile[it].toString(),
                                             fontSize = 25.sp,
                                             fontWeight = FontWeight.ExtraBold,
                                             color = Color.White)
@@ -256,6 +351,36 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
                 }
             }
         )
+
+        if(showDialog){
+            AlertDialog(onDismissRequest = {},
+                confirmButton = {  },
+                modifier = Modifier.height(300.dp)
+                    .border(BorderStroke(5.dp, Color.Black))
+                    .clip(RoundedCornerShape(15.dp)),
+                title = {
+                        Box(
+                            modifier = Modifier.fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ){
+                            Text("GAME OVER",fontWeight = FontWeight.Bold)
+                        }
+                },
+                text = {
+                    Column(
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                ) {
+                    Text(winner, fontSize = 30.sp,
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold)
+                    Text("IS THE WINNER", fontSize = 30.sp,
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.Bold)
+                }
+                }
+            )
+        }
     }
 }
-
