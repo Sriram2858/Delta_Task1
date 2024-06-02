@@ -20,7 +20,7 @@ fun Nav(){
             }
         }
         composable("gamepage"){
-            GamePage() {
+            GamePage {
                 navController.navigate("playerdatapage")
             }
         }
