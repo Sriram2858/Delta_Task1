@@ -34,10 +34,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Mainpage(navigationToPlayerdatapage:()->Unit){
+fun Mainpage(navController: NavHostController){
     val fontFamily = FontFamily(
         Font(R.font.leckerlione_regular, FontWeight.Normal)
     )
@@ -76,7 +78,7 @@ fun Mainpage(navigationToPlayerdatapage:()->Unit){
                     .offset(x = (-30).dp, y = (320).dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2fb6f0)),
                 elevation = ButtonDefaults.buttonElevation(defaultElevation = 10.dp),
-                onClick = { navigationToPlayerdatapage() },
+                onClick = { navController.navigate("playerdatapage") },
             ) {
                 Text("PLAY", fontSize = 35.sp, fontWeight = FontWeight.Bold)
             }

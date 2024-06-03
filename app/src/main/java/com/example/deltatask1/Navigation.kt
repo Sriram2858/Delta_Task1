@@ -10,19 +10,13 @@ fun Nav(){
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = "homepage") {
         composable("homepage"){
-            Mainpage {
-                navController.navigate("playerdatapage")
-            }
+            Mainpage (navController)
         }
         composable("playerdatapage"){
-            Playerinfo {
-                navController.navigate("gamepage")
-            }
+            Playerinfo (navController)
         }
         composable("gamepage"){
-            GamePage {
-                navController.navigate("playerdatapage")
-            }
+            GamePage(navController)
         }
     }
 }

@@ -38,10 +38,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Playerinfo(navigationToGamePage:()->Unit){
+fun Playerinfo(navHostController: NavHostController){
 
     var textFieldValueReference1 by remember{
         mutableStateOf("")
@@ -154,7 +155,7 @@ fun Playerinfo(navigationToGamePage:()->Unit){
                 }
             }
             Button(
-                onClick = { navigationToGamePage() },
+                onClick = { navHostController.navigate("gamepage") },
                 modifier = Modifier
                     .height(68.dp)
                     .width(200.dp)

@@ -2,13 +2,14 @@ package com.example.deltatask1
 
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,11 +23,14 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -41,17 +45,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 
 
 @Composable
-fun GamePage(navigateToPlayerdatapage:()->Unit){
+fun GamePage(navController: NavHostController){
 
     val tile = remember { mutableStateListOf(*Array(25) { 0 }) }
 
+    var exitClicked by remember { mutableIntStateOf(0) }
     val playerOneTile = remember { mutableStateListOf(*Array(25){ 0 }) }
     val playerTwoTile = remember { mutableStateListOf(*Array(25){ 0 }) }
 
@@ -69,12 +77,14 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
     var winner by remember { mutableStateOf("") }
 
     var showDialog by remember { mutableStateOf(false) }
+    val winnerIcon =  painterResource(id = R.drawable.winner)
 
     Box (
         modifier = Modifier
             .fillMaxSize()
             .background(backgroundColor)
     ) {
+
         Button(
             onClick = ({}),
             modifier = Modifier
@@ -157,7 +167,8 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
         }
 
         Button(
-            onClick = { navigateToPlayerdatapage() },
+            onClick = { exitClicked = 1
+                navController.navigate("homepage") },
             shape = CircleShape,
             modifier = Modifier
                 .size(50.dp)
@@ -170,6 +181,7 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
                 fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
             )
         }
+    }
 
         fun expand(index: Int){
             val x = index % 5
@@ -267,10 +279,13 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
                                     }
 
                                     if (playerOnePoints == 0) {
-                                        winner = (if (globalTextFieldValueReference2 == "") "PLAYER2" else globalTextFieldValueReference2).uppercase()
+                                        winner =
+                                            (if (globalTextFieldValueReference2 == "") "PLAYER2" else globalTextFieldValueReference2).uppercase()
                                         showDialog = true
                                     } else if (playerTwoPoints == 0) {
-                                        winner = (if (globalTextFieldValueReference1 == "") {"PLAYER1"} else globalTextFieldValueReference1).uppercase()
+                                        winner = (if (globalTextFieldValueReference1 == "") {
+                                            "PLAYER1"
+                                        } else globalTextFieldValueReference1).uppercase()
                                         showDialog = true
                                     }
 
@@ -299,10 +314,12 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
                                         }
                                     }
                                     if (playerOnePoints == 0) {
-                                        winner = (if (globalTextFieldValueReference2 == "") "PLAYER2" else globalTextFieldValueReference2).uppercase()
+                                        winner =
+                                            (if (globalTextFieldValueReference2 == "") "PLAYER2" else globalTextFieldValueReference2).uppercase()
                                         showDialog = true
                                     } else if (playerTwoPoints == 0) {
-                                        winner = (if (globalTextFieldValueReference1 == "") "PLAYER1" else globalTextFieldValueReference1).uppercase()
+                                        winner =
+                                            (if (globalTextFieldValueReference1 == "") "PLAYER1" else globalTextFieldValueReference1).uppercase()
                                         showDialog = true
                                     }
                                 }
@@ -352,35 +369,69 @@ fun GamePage(navigateToPlayerdatapage:()->Unit){
             }
         )
 
-        if(showDialog){
+        if(showDialog) {
+            playerOnePoints = 0
+            playerTwoPoints = 0
             AlertDialog(onDismissRequest = {},
-                confirmButton = {  },
-                modifier = Modifier.height(300.dp)
-                    .border(BorderStroke(5.dp, Color.Black))
-                    .clip(RoundedCornerShape(15.dp)),
-                title = {
-                        Box(
-                            modifier = Modifier.fillMaxWidth(),
-                            contentAlignment = Alignment.Center
-                        ){
-                            Text("GAME OVER",fontWeight = FontWeight.Bold)
+                confirmButton = {
+                    Button(
+                        onClick = { navController.navigate("gamepage") },
+                        shape = CircleShape,
+                        colors = ButtonDefaults.buttonColors(Color(0xFFffc107))
+                    ) {
+                        Row {
+                            Icon(
+                                imageVector = Icons.Filled.Refresh,
+                                contentDescription = "Replay Button",
+                                modifier = Modifier
+                                    .size(35.dp)
+                                    .padding(3.dp)
+                            )
                         }
+                    }
+
+                    Button(
+                        onClick = { navController.navigate("homepage") },
+                        colors = ButtonDefaults.buttonColors(Color(0xFFffc107))
+                    ) {
+                        Text(
+                            "MAIN MENU", color = Color.White, fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(5.dp), fontSize = 17.sp
+                        )
+                    }
+                },
+                modifier = Modifier
+                    .height(550.dp),
+                title = {
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            "GAME OVER", fontSize = 30.sp, color = Color(0xFFffc107),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 },
                 text = {
                     Column(
                         modifier = Modifier.fillMaxSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
-                ) {
-                    Text(winner, fontSize = 30.sp,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold)
-                    Text("IS THE WINNER", fontSize = 30.sp,
-                        textAlign = TextAlign.Center,
-                        fontWeight = FontWeight.Bold)
-                }
+                        verticalArrangement = Arrangement.Bottom
+                    ) {
+                        Image(painter = winnerIcon, contentDescription = "Winner Icon")
+                        Text(
+                            winner, fontSize = 30.sp,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            "IS THE WINNER", fontSize = 30.sp,
+                            textAlign = TextAlign.Center,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             )
         }
     }
-}
