@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -102,6 +103,7 @@ fun Playerinfo(navHostController: NavHostController){
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.BottomCenter
                 ){
+
                     TextField(
                         value = textFieldValueReference1,
                         placeholder = {
@@ -120,6 +122,14 @@ fun Playerinfo(navHostController: NavHostController){
                     )
                     Text("--------", fontSize = 40.sp, fontWeight = FontWeight.Bold,
                         color = Color(0xFFff5f57), modifier = Modifier.offset(y = 7.dp))
+                    Box(modifier = Modifier.align(Alignment.TopCenter)
+                        .height(44.dp)
+                        .padding(top = 2.dp)){
+                        Image(
+                            painter = painterResource(id = R.drawable.playericon),
+                            contentDescription = "Player One Icon",
+                            colorFilter = ColorFilter.tint(Color(0xFFff5f57)))
+                    }
                 }
             }
 //player2
@@ -152,6 +162,14 @@ fun Playerinfo(navHostController: NavHostController){
                     )
                     Text("--------", fontSize = 40.sp, fontWeight = FontWeight.Bold,
                         color = Color(0xFF2fb6f0), modifier = Modifier.offset(y = 7.dp))
+                    Box(modifier = Modifier.align(Alignment.TopCenter)
+                        .height(44.dp)
+                        .padding(1.dp)){
+                        Image(
+                            painter = painterResource(id = R.drawable.playericon),
+                            contentDescription = "Player One Icon",
+                            colorFilter = ColorFilter.tint(Color(0xFF2fb6f0)))
+                    }
                 }
             }
             Button(
@@ -167,21 +185,11 @@ fun Playerinfo(navHostController: NavHostController){
             }
         }
     }
-    Myimage2()
-    Myimage3()
-}
-
-@Composable
-fun Myimage2(){
     Image(painter = painterResource(id = R.drawable.icon3), contentDescription = null,
         modifier = Modifier
             .height(260.dp)
             .width(275.dp)
             .offset(x = (-30).dp, y = 205.dp))
-}
-
-@Composable
-fun Myimage3(){
     Image(painter = painterResource(id = R.drawable.icon4), contentDescription = null,
         modifier = Modifier
             .fillMaxSize()

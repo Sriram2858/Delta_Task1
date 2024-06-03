@@ -1,6 +1,9 @@
 package com.example.deltatask1
 
 
+import android.content.Context
+import android.content.SharedPreferences
+import android.graphics.drawable.Icon
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,6 +37,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.internal.isLiveLiteralsEnabled
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +49,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.modifier.modifierLocalConsumer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -57,9 +63,19 @@ import androidx.navigation.NavHostController
 @Composable
 fun GamePage(navController: NavHostController){
 
+
+
+    val context = LocalContext.current
+    val preferencesManager = remember { PreferencesManager(context) }
+
+    var showDialog by remember { mutableStateOf(false) }
+
+    var showDialogReference2 by remember { mutableStateOf(false) }
+
     val tile = remember { mutableStateListOf(*Array(25) { 0 }) }
 
     var exitClicked by remember { mutableIntStateOf(0) }
+
     val playerOneTile = remember { mutableStateListOf(*Array(25){ 0 }) }
     val playerTwoTile = remember { mutableStateListOf(*Array(25){ 0 }) }
 
@@ -76,7 +92,6 @@ fun GamePage(navController: NavHostController){
 
     var winner by remember { mutableStateOf("") }
 
-    var showDialog by remember { mutableStateOf(false) }
     val winnerIcon =  painterResource(id = R.drawable.winner)
 
     Box (
@@ -84,7 +99,7 @@ fun GamePage(navController: NavHostController){
             .fillMaxSize()
             .background(backgroundColor)
     ) {
-
+        //playertwo points
         Button(
             onClick = ({}),
             modifier = Modifier
@@ -105,7 +120,8 @@ fun GamePage(navController: NavHostController){
                     .graphicsLayer(rotationZ = 180f)
             )
         }
-//player2
+
+//player two name
         Button(
             onClick = ({}),
             modifier = Modifier
@@ -126,7 +142,7 @@ fun GamePage(navController: NavHostController){
                     .padding(top = 3.dp, bottom = 3.dp, end = 10.dp)
             )
         }
-
+//player one points
         Button(
             onClick = {},
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2f323b)),
@@ -145,7 +161,7 @@ fun GamePage(navController: NavHostController){
                 color = Color(0xFFff5f57)
             )
         }
-//PLAYER1
+//PLAYER1 NAME
         Button(
             onClick = ({}),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2f323b)),
@@ -165,24 +181,7 @@ fun GamePage(navController: NavHostController){
                 color = Color(0xFFff5f57)
             )
         }
-
-        Button(
-            onClick = { exitClicked = 1
-                navController.navigate("homepage") },
-            shape = CircleShape,
-            modifier = Modifier
-                .size(50.dp)
-                .offset(x = 330.dp, y = 25.dp)
-                .shadow(10.dp, CircleShape),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.White)
-        ) {
-            Text(
-                text = "X", fontSize = 25.sp, color = Color(0xFFa0b9cd),
-                fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
-            )
-        }
-    }
-
+//Tile expand
         fun expand(index: Int){
             val x = index % 5
             val y = index / 5
@@ -368,14 +367,14 @@ fun GamePage(navController: NavHostController){
                 }
             }
         )
-
+//winner dialog box
         if(showDialog) {
-            playerOnePoints = 0
-            playerTwoPoints = 0
+            preferencesManager.saveInteger(winner, 1)
             AlertDialog(onDismissRequest = {},
                 confirmButton = {
                     Button(
-                        onClick = { navController.navigate("gamepage") },
+                        onClick = {
+                            navController.navigate("gamepage") },
                         shape = CircleShape,
                         colors = ButtonDefaults.buttonColors(Color(0xFFffc107))
                     ) {
@@ -434,4 +433,62 @@ fun GamePage(navController: NavHostController){
                 }
             )
         }
+//Exit and restart button
+        Button(
+            onClick = { showDialogReference2 = true },
+            shape = CircleShape,
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 23.dp, end = 28.dp)
+                .size(55.dp),
+            colors = ButtonDefaults.buttonColors(Color.White)
+        ) {
+            Text("X", fontSize = 28.sp, textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold, color = Color.Black)
+        }
+
+        //game over dialog box
+        if(showDialogReference2){
+            AlertDialog(
+                onDismissRequest = {},
+                confirmButton = {
+                    Button(
+                        onClick = { showDialogReference2 = false },
+                        modifier = Modifier.padding(2.dp)
+                            .width(160.dp),
+                        colors = ButtonDefaults.buttonColors(Color.Green)
+                    ) {
+                        Text(
+                            "RESUME", color = Color.White,
+                            fontWeight = FontWeight.Bold, fontSize = 17.sp
+                        )
+                    }
+
+                    Button(
+                        onClick = { navController.navigate("gamepage") },
+                        modifier = Modifier.padding(2.dp)
+                            .width(160.dp),
+                        colors = ButtonDefaults.buttonColors(Color.Blue)
+                    ) {
+                        Text(
+                            "RESTART", color = Color.White,
+                            fontWeight = FontWeight.Bold, fontSize = 17.sp
+                        )
+                    }
+
+                    Button(
+                    onClick = { navController.navigate("homepage") },
+                    modifier = Modifier.padding(2.dp)
+                        .width(160.dp),
+                    colors = ButtonDefaults.buttonColors(Color.Red)
+                ) {
+                    Text(
+                        "MAIN MENU", color = Color.White,
+                        fontWeight = FontWeight.Bold, fontSize = 17.sp
+                    )
+                }},
+                modifier = Modifier.height(235.dp).width(200.dp)
+            )
+        }
     }
+}

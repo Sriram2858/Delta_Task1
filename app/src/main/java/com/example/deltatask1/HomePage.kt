@@ -47,6 +47,8 @@ fun Mainpage(navController: NavHostController){
         colors = listOf(Color(0xFF1b1110), Color(0xFFcc7d77))
     )
     var showDialog by remember { mutableStateOf(false) }
+    var showDialogReference1 by remember { mutableStateOf(false) }
+
     Box (
         modifier = Modifier
             .fillMaxSize()
@@ -94,14 +96,25 @@ fun Mainpage(navController: NavHostController){
                 Text("?", fontSize = 40.sp, fontWeight = FontWeight.Bold)
             }
         }
+
+        Button(onClick = { showDialogReference1 = true },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 10.dp, end = 10.dp)) {
+            Text("WINS", fontSize = 17.sp)
+        }
     }
-    Myimage()
+
+    Image(painter = painterResource(id = R.drawable.icons), contentDescription = null,
+        modifier = Modifier
+            .fillMaxSize()
+            .offset(y = (90).dp))
 
     if(showDialog){
         AlertDialog(onDismissRequest = { showDialog = false },
             confirmButton = { /*TODO*/ },
             modifier = Modifier.height(500.dp),
-            title = {Text("Instructions", fontWeight = FontWeight.Bold)},
+            title = {Text("RULES", fontWeight = FontWeight.Bold)},
             text = {
                 Column(
                     modifier = Modifier
@@ -122,14 +135,13 @@ fun Mainpage(navController: NavHostController){
                             "Players take turns clicking on tiles and the objective is to eliminate your opponent's colour entirely from the screen.", fontSize = 20.sp)
                 }
             }
-            )
+        )
+    }
+
+    if ( showDialogReference1 ){
+        AlertDialog(
+            onDismissRequest = { showDialogReference1 = false },
+            confirmButton = { showDialogReference1 = false })
     }
 }
 
-@Composable
-fun Myimage(){
-    Image(painter = painterResource(id = R.drawable.icons), contentDescription = null,
-        modifier = Modifier
-            .fillMaxSize()
-            .offset(y = (90).dp))
-}
