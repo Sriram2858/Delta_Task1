@@ -3,7 +3,7 @@ package com.example.deltatask1
 import android.content.Context
 import android.content.SharedPreferences
 
-class PreferencesManager(context: Context) {
+class Preferencesmanager(context: Context) {
     private val sharedPreferences: SharedPreferences = context
         .getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
 

@@ -1,9 +1,6 @@
 package com.example.deltatask1
 
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.graphics.drawable.Icon
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -37,7 +34,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.internal.isLiveLiteralsEnabled
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -49,57 +45,41 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.modifier.modifierLocalConsumer
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 
 
 @Composable
 fun GamePage(navController: NavHostController){
 
-
-
-    val context = LocalContext.current
-    val preferencesManager = remember { PreferencesManager(context) }
+//    val context = LocalContext.current
+//    val preferencesManager = remember { Preferencesmanager(context) }
 
     var showDialog by remember { mutableStateOf(false) }
-
     var showDialogReference2 by remember { mutableStateOf(false) }
-
     val tile = remember { mutableStateListOf(*Array(25) { 0 }) }
-
-    var exitClicked by remember { mutableIntStateOf(0) }
-
     val playerOneTile = remember { mutableStateListOf(*Array(25){ 0 }) }
     val playerTwoTile = remember { mutableStateListOf(*Array(25){ 0 }) }
-
     var isPlayerOneTurn by remember { mutableStateOf(true) }
     val backgroundColor = if (isPlayerOneTurn) Color(0xFFff5f57) else Color(0xFF2fb6f0)
-
     var playerOnePoints by remember { mutableIntStateOf(0) }
     var playerTwoPoints by remember { mutableIntStateOf(0) }
-
     var playerOneFirstTurn by remember { mutableIntStateOf(1) }
     var playerTwoFirstTurn by remember { mutableIntStateOf(1) }
-
     var currentPlayer by remember { mutableIntStateOf(1) }
-
     var winner by remember { mutableStateOf("") }
-
-    val winnerIcon =  painterResource(id = R.drawable.winner)
 
     Box (
         modifier = Modifier
             .fillMaxSize()
             .background(backgroundColor)
     ) {
-        //playertwo points
+
+//playertwo points
         Button(
             onClick = ({}),
             modifier = Modifier
@@ -352,6 +332,7 @@ fun GamePage(navController: NavHostController){
                                         modifier = Modifier
                                             .clip(CircleShape)
                                             .size(50.dp)
+                                            .align(Alignment.Center)
                                             .background(color = Color(0xFF2fb6f0)),
                                         contentAlignment = Alignment.Center
                                     ) {
@@ -369,7 +350,6 @@ fun GamePage(navController: NavHostController){
         )
 //winner dialog box
         if(showDialog) {
-            preferencesManager.saveInteger(winner, 1)
             AlertDialog(onDismissRequest = {},
                 confirmButton = {
                     Button(
@@ -390,7 +370,9 @@ fun GamePage(navController: NavHostController){
                     }
 
                     Button(
-                        onClick = { navController.navigate("homepage") },
+                        onClick = {
+                            navController.navigate("homepage")
+                        },
                         colors = ButtonDefaults.buttonColors(Color(0xFFffc107))
                     ) {
                         Text(
@@ -418,7 +400,7 @@ fun GamePage(navController: NavHostController){
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Bottom
                     ) {
-                        Image(painter = winnerIcon, contentDescription = "Winner Icon")
+                        Image(painter = painterResource(id = R.drawable.winner), contentDescription = "Winner Icon")
                         Text(
                             winner, fontSize = 30.sp,
                             textAlign = TextAlign.Center,
@@ -454,7 +436,8 @@ fun GamePage(navController: NavHostController){
                 confirmButton = {
                     Button(
                         onClick = { showDialogReference2 = false },
-                        modifier = Modifier.padding(2.dp)
+                        modifier = Modifier
+                            .padding(2.dp)
                             .width(160.dp),
                         colors = ButtonDefaults.buttonColors(Color.Green)
                     ) {
@@ -466,7 +449,8 @@ fun GamePage(navController: NavHostController){
 
                     Button(
                         onClick = { navController.navigate("gamepage") },
-                        modifier = Modifier.padding(2.dp)
+                        modifier = Modifier
+                            .padding(2.dp)
                             .width(160.dp),
                         colors = ButtonDefaults.buttonColors(Color.Blue)
                     ) {
@@ -478,7 +462,8 @@ fun GamePage(navController: NavHostController){
 
                     Button(
                     onClick = { navController.navigate("homepage") },
-                    modifier = Modifier.padding(2.dp)
+                    modifier = Modifier
+                        .padding(2.dp)
                         .width(160.dp),
                     colors = ButtonDefaults.buttonColors(Color.Red)
                 ) {
@@ -487,7 +472,9 @@ fun GamePage(navController: NavHostController){
                         fontWeight = FontWeight.Bold, fontSize = 17.sp
                     )
                 }},
-                modifier = Modifier.height(235.dp).width(200.dp)
+                modifier = Modifier
+                    .height(235.dp)
+                    .width(200.dp)
             )
         }
     }

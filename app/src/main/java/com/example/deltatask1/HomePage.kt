@@ -34,12 +34,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Mainpage(navController: NavHostController){
+
+//    val context = LocalContext.current
+//    val preferencesManager = remember { Preferencesmanager(context) }
+
     val fontFamily = FontFamily(
         Font(R.font.leckerlione_regular, FontWeight.Normal)
     )
@@ -140,8 +143,17 @@ fun Mainpage(navController: NavHostController){
 
     if ( showDialogReference1 ){
         AlertDialog(
-            onDismissRequest = { showDialogReference1 = false },
-            confirmButton = { showDialogReference1 = false })
+            onDismissRequest = {},
+            confirmButton = {
+                Button(
+                    onClick = {showDialogReference1 = false},
+                    ){
+                    Text("OK")
+                }
+            },
+            text = {
+            }
+        )
     }
 }
 
