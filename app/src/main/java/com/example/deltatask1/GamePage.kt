@@ -183,11 +183,11 @@ fun GamePage(navController: NavHostController){
                 if ((expandX[i] in 0..4) && (expandY[i] in 0..4)){
                     expandIndex[i] = expandY[i] * 5 + expandX[i]
                     tile[expandIndex[i]] += 1
-                    if (currentPlayer == 1) {
+                    if (currentPlayer == 3) {
                         playerOneTile[expandIndex[i]] = 1
                         playerTwoTile[expandIndex[i]] = 0
                     }
-                    else if(currentPlayer == 2){
+                    else if(currentPlayer == 4){
                         playerOneTile[expandIndex[i]] = 0
                         playerTwoTile[expandIndex[i]] = 1
                     }
@@ -224,24 +224,25 @@ fun GamePage(navController: NavHostController){
                                     playerOneFirstTurn = 0
                                     playerOnePoints += 3
                                     currentPlayer = 2
-                                } else if (playerTwoFirstTurn == 1) {
+                                } else if (playerTwoFirstTurn == 1 && playerOneTile[it] != 1) {
                                     isPlayerOneTurn = !isPlayerOneTurn
                                     tile[it] = 3
                                     playerTwoTile[it] = 1
                                     playerTwoFirstTurn = 0
                                     playerTwoPoints += 3
-                                    currentPlayer = 1
-                                } else if (currentPlayer == 1) {
+                                    currentPlayer = 3
+                                }
+                                else if (currentPlayer == 3) {
 
                                     if (tile[it] == 3 && playerOneTile[it] == 1) {
                                         isPlayerOneTurn = !isPlayerOneTurn
                                         tile[it] = 0
                                         expand(it)
-                                        currentPlayer = 2
+                                        currentPlayer = 4
                                     } else if (tile[it] != 0 && playerOneTile[it] == 1) {
                                         isPlayerOneTurn = !isPlayerOneTurn
                                         tile[it] += 1
-                                        currentPlayer = 2
+                                        currentPlayer = 4
                                     }
 
                                     playerOnePoints = 0
@@ -268,16 +269,16 @@ fun GamePage(navController: NavHostController){
                                         showDialog = true
                                     }
 
-                                } else if (currentPlayer == 2) {
+                                } else if (currentPlayer == 4) {
                                     if (tile[it] == 3 && playerTwoTile[it] == 1) {
                                         isPlayerOneTurn = !isPlayerOneTurn
                                         tile[it] = 0
                                         expand(it)
-                                        currentPlayer = 1
+                                        currentPlayer = 3
                                     } else if (tile[it] != 0 && playerTwoTile[it] == 1) {
                                         isPlayerOneTurn = !isPlayerOneTurn
                                         tile[it] += 1
-                                        currentPlayer = 1
+                                        currentPlayer = 3
                                     }
 
                                     playerOnePoints = 0
