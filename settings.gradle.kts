@@ -7,7 +7,7 @@ pluginManagement {
 
     plugins {
         // Ensure you're using the correct plugin versions
-        id("com.android.application") version "8.1.0"
+        id("com.android.application") version "8.3.2"
         id("org.jetbrains.kotlin.android") version "1.9.10"
     }
 }
