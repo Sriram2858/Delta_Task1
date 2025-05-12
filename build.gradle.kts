@@ -7,7 +7,7 @@ buildscript {
     }
     dependencies {
         classpath("com.android.tools.build:gradle:8.3.2")  // The Android Gradle Plugin version you're using
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.10")  // Kotlin plugin version
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.0")  // Kotlin plugin version
     }
 }
 
